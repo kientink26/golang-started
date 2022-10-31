@@ -1,0 +1,53 @@
+{{template "base" .}}
+{{define "title"}}Thread #{{.Thread.ID}}{{end}}
+{{define "body"}}
+{{$userID := 0}}
+{{with .Authentication}}
+{{$userID = .UserID}}
+{{end}}
+{{with .Thread}}
+<div class='thread'>
+   <div>
+      <strong>{{.Topic}}</strong>
+   </div>
+   <div>
+      <time>Created at: {{humanDate .Created}}</time> by 
+      {{if (eq .User.ID $userID)}}
+      You 
+      {{else}}{{.User.Name}}{{end}}
+   </div>
+</div>
+<br>
+{{end}}
+{{if .Authentication}}
+<a href='/thread/{{.Thread.ID}}/post/create' class="button">Create new post</a>
+<br><br>
+{{end}}
+<h2>Latest Posts</h2>
+{{$threadID := .Thread.ID}}
+<table>
+   {{range .Thread.Posts}}
+   <tr>
+      <td>
+         <div class='snippet'>
+         <pre><code>{{.Body}}</code></pre>
+         <div class='metadata'>
+            <time>Created at: {{humanDate .Created}}</time> by 
+            {{if (eq .User.ID $userID)}}
+            You 
+            {{else}}{{.User.Name}}{{end}}
+         </div>
+      </td>
+      <td>
+         {{if (eq .User.ID $userID)}}
+         <form action='/thread/{{$threadID}}/post/{{.ID}}/delete' method='POST'>
+            <input type="submit" value="Delele Post" />
+         </form>
+         {{end}}
+      </td>
+   </tr>
+   {{else}}
+   <p>There's nothing to see here... yet!</p>
+   {{end}}
+</table>
+{{end}}

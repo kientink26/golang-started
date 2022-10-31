@@ -1,0 +1,18 @@
+{{template "base" .}}
+{{define "title"}}Create a New Thread{{end}}
+{{define "body"}}
+<form action='/thread/create' method='POST'>
+   {{with .Form}}
+   <div>
+      <label>Topic:</label>
+      {{with .Errors.Get "topic"}}
+      <label class='error'>{{.}}</label>
+      {{end}}
+      <input type='text' name='topic' value='{{.Get "topic"}}'>
+   </div>
+   <div>
+      <input type='submit' value='Publish thread'>
+   </div>
+   {{end}}
+</form>
+{{end}}

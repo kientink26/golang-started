@@ -1,0 +1,18 @@
+{{template "base" .}}
+{{define "title"}}Create a New Post{{end}}
+{{define "body"}}
+<form method='POST'>
+   {{with .Form}}
+   <div>
+      <label>Body:</label>
+      {{with .Errors.Get "body"}}
+      <label class='error'>{{.}}</label>
+      {{end}}
+      <textarea name='body'>{{.Get "body"}}</textarea>
+   </div>
+   <div>
+      <input type='submit' value='Publish post'>
+   </div>
+   {{end}}
+</form>
+{{end}}

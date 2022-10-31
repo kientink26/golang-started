@@ -1,0 +1,30 @@
+{{template "base" .}}
+{{define "title"}}Home{{end}}
+{{define "body"}}
+{{$userID := 0}}
+{{with .Authentication}}
+{{$userID = .UserID}}
+{{end}}
+<h2>Latest Threads</h2>
+{{if .Threads}}
+<table>
+   <tr>
+      <th>Topic</th>
+      <th>Created at</th>
+      <th>Created by</th>
+   </tr>
+   {{range .Threads}}
+   <tr>
+      <td><a href='/thread/{{.ID}}'>{{.Topic}}</a></td>
+      <td>{{humanDate .Created}}</td>
+      <td>{{if (eq .User.ID $userID)}}
+         You 
+         {{else}}{{.User.Name}}{{end}}
+      </td>
+   </tr>
+   {{end}}
+</table>
+{{else}}
+<p>There's nothing to see here... yet!</p>
+{{end}}
+{{end}}
