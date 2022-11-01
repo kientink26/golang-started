@@ -54,7 +54,12 @@ func (m *PostModel) Delete(id int, userId int) error {
 }
 
 func (m *PostModel) Latest(threadId int) ([]*models.Post, error) {
-	stmt := `SELECT id, body, user_id, created FROM posts WHERE thread_id = ? ORDER BY created DESC`
+	stmt := `SELECT p.id, p.body, p.created, u.id, u.name
+			FROM posts as p
+			INNER JOIN users as u
+			ON p.user_id = u.id
+			WHERE p.thread_id = ?
+			ORDER BY p.created DESC`
 	rows, err := m.DB.Query(stmt, threadId)
 	if err != nil {
 		return nil, err
@@ -64,7 +69,7 @@ func (m *PostModel) Latest(threadId int) ([]*models.Post, error) {
 	posts := []*models.Post{}
 	for rows.Next() {
 		s := &models.Post{User: &models.User{}} // avoid nil pointer dereference
-		err = rows.Scan(&s.ID, &s.Body, &s.User.ID, &s.Created)
+		err = rows.Scan(&s.ID, &s.Body, &s.Created, &s.User.ID, &s.User.Name)
 		if err != nil {
 			return nil, err
 		}

@@ -16,13 +16,6 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
-	for i := range threads {
-		threads[i].User, err = app.users.Get(threads[i].User.ID)
-		if err != nil {
-			app.serverError(w, err)
-			return
-		}
-	}
 	app.render(w, r, "home.page.tmpl", &templateData{
 		Threads: threads,
 	})
@@ -43,12 +36,6 @@ func (app *application) showThread(w http.ResponseWriter, r *http.Request) {
 		} else {
 			app.serverError(w, err)
 		}
-		return
-	}
-
-	s.User, err = app.users.Get(s.User.ID)
-	if err != nil {
-		app.serverError(w, err)
 		return
 	}
 

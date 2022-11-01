@@ -31,12 +31,16 @@ func (m *ThreadModel) Insert(topic string, userId int) (int, error) {
 
 // This will return a specific thread based on its id.
 func (m *ThreadModel) Get(id int) (*models.Thread, error) {
-	stmt := `SELECT id, topic, user_id, created FROM threads WHERE id = ?`
+	stmt := `SELECT t.id, t.topic, t.created, u.id, u.name
+			FROM threads as t
+			INNER JOIN users as u
+			ON t.user_id = u.id
+			WHERE t.id = ?`
 
 	row := m.DB.QueryRow(stmt, id)
 
 	thread := &models.Thread{User: &models.User{}} // avoid nil pointer dereference
-	err := row.Scan(&thread.ID, &thread.Topic, &thread.User.ID, &thread.Created)
+	err := row.Scan(&thread.ID, &thread.Topic, &thread.Created, &thread.User.ID, &thread.User.Name)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, models.ErrNoRecord
