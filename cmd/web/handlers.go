@@ -58,14 +58,6 @@ func (app *application) showThread(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for i := range s.Posts {
-		s.Posts[i].User, err = app.users.Get(s.Posts[i].User.ID)
-		if err != nil {
-			app.serverError(w, err)
-			return
-		}
-	}
-
 	app.render(w, r, "showThread.page.tmpl", &templateData{
 		Thread: s,
 	})
